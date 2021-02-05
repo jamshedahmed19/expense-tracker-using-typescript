@@ -1,34 +1,42 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ITransaction } from "../Interfaces/Transaction.interface";
+import {
+  IAddTransactionAction,
+  ITransaction,
+  ITransactionState,
+} from "../Interfaces/Transaction.interface";
 
-interface IinitialState {
-  amount: number;
-  type: "Income" | "Expense";
-  error: string;
-}
-
-const initialState: IinitialState = {
-  amount: 0,
-  type: "Income",
-  error: "",
+const initialState: ITransactionState = {
+  transactions: [
+    {
+      id: "111111",
+      title: "Test",
+      detail: "",
+      type: "Income",
+      amount: 200000,
+    },
+  ],
 };
 export const transactionSlice = createSlice({
   name: "Transaction",
   initialState,
   reducers: {
-    addTransaction: (state, { payload }: PayloadAction<ITransaction>) => {
-      console.log("Payload", payload);
-      if (payload.type === "Income") {
-        state.amount = state.amount + payload.amount;
-      } else if (payload.type === "Expense") {
-        state.amount -= payload.amount;
-      } else {
-        initialState.error = `${payload.type} doesn't exist`;
-      }
+    ADD_TRANSACTION: (state, {payload}: PayloadAction<ITransaction>) => {
+      return {
+        ...state,
+        transactions: [payload, ...state.transactions],
+      };
+    },
+    DELETE_TRANSACTION: (state, { payload }: PayloadAction<string>) => {
+      return {
+        ...state,
+        transactions: state.transactions.filter(
+          (transaction) => transaction.id !== payload
+        ),
+      };
     },
   },
 });
 
 export default transactionSlice.reducer;
 
-export const { addTransaction } = transactionSlice.actions;
+export const { ADD_TRANSACTION, DELETE_TRANSACTION } = transactionSlice.actions;
