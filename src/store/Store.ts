@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import transactionReducer from "./TransactionSlice";
 
 const rootReducer = combineReducers({
-  transaction: transactionReducer,
+  transactions: transactionReducer,
 });
 
 export const store = configureStore({

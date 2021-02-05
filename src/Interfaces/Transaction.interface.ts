@@ -1,5 +1,5 @@
 export interface ITransaction {
-  id?: string;
+  id: string;
   title?: string;
   detail?: string;
   type: string;
@@ -10,8 +10,8 @@ export interface ITransactionState {
   transactions: ITransaction[];
 }
 
-export const ADD_TRANSACTION = "ADD_TRANSACTION";
-export const DELETE_TRANSACTION = "DELETE_TRANSACTION";
+const ADD_TRANSACTION = "ADD_TRANSACTION";
+const DELETE_TRANSACTION = "DELETE_TRANSACTION";
 export interface IAddTransactionAction {
   type: typeof ADD_TRANSACTION;
   payload: ITransaction;

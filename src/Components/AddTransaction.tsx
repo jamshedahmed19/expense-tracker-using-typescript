@@ -1,8 +1,9 @@
-import { Button, MenuItem, TextField } from "@material-ui/core";
+import { Button, MenuItem, Select, TextField } from "@material-ui/core";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   ITransaction,
+  ITransactionState,
   TransactionType,
 } from "../Interfaces/Transaction.interface";
 import { RootState, useAppDispatch } from "../store/Store";
@@ -14,36 +15,32 @@ export interface AddTransactionProps {}
 
 const AddTransaction: React.FC<AddTransactionProps> = () => {
   const balance = useSelector((state: RootState) => {
-    console.log("transaction", state.transaction.transactions);
-    return state.transaction.transactions.map(
-      (transaction: ITransaction) => transaction.amount
+    console.log("transaction", state);
+    return state.transactions.transactions.map(
+      (transaction) => transaction.amount
     );
   });
   const total = balance.reduce((acc, item) => (acc += item), 0).toFixed(2);
   let newDateTime = () => new Date();
   const [amount, setAmount] = useState(0);
-  const [type, setType] = useState("Income");
+  const [type, setType] = useState("");
   const [detail, setDetail] = useState("Transaction Detail");
   const [title, setTitle] = useState("Transaction Title");
-  //const [date, setDate] = useState(newDateTime().toISOString());
-  const [date, setDate] = useState<Date>(new Date());
 
-  const getTransactionType = (amount: number, type: TransactionType) => {
-    return type === TransactionType.Income ? amount : -amount;
+  const getTransactionType = (amount: number, type: string) => {
+    return type === "Income" ? amount : -amount;
   };
 
-  const getEnum = (type: string): TransactionType => {
-    return TransactionType[type as keyof typeof TransactionType];
-  };
-  // const handleDateChange = (date: Date | null) => {
-  //   setSelectedDate(date);
+  // const getEnum = (type: string): TransactionType => {
+  //   return TransactionType[type as keyof typeof TransactionType];
   // };
+
   console.log(newDateTime().toISOString());
   const transaction = {
     id: uuid.v4(),
     title,
     detail,
-    amount: getTransactionType(amount, getEnum(type)),
+    amount: getTransactionType(amount, type),
     type,
   };
 
@@ -91,16 +88,19 @@ const AddTransaction: React.FC<AddTransactionProps> = () => {
           select
           size="small"
           label="Transaction Type"
+          defaultValue=""
           value={type}
-          onChange={(e) => setType(e.target.value)}
+          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            setType(e.target.value as string);
+          }}
           helperText="Please select your currency"
           variant="outlined"
         >
-          <MenuItem key="+" value={TransactionType.Income}>
-            + Income
+          <MenuItem key={TransactionType.Income} value="Income">
+            - Income
           </MenuItem>
-          <MenuItem key="-" value={TransactionType.Expense}>
-            - Expense
+          <MenuItem key={TransactionType.Expense} value="Expense">
+            + Expense
           </MenuItem>
         </TextField>
         {/* <TextField
